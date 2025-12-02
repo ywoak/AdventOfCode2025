@@ -1,4 +1,5 @@
 import subprocess
+import sys
 import os
 import re
 
@@ -12,7 +13,11 @@ if not match:
 
 i = match.start() + 3
 day = caller_path[i:]
-print(f'day is {day}') 
 
 if __name__ == '__main__':
-    subprocess.run(['python', f'day_{day}.py'], stdin=open(f'input_{day}.txt'))
+    if len(sys.argv) <= 1:
+        subprocess.run(['python', f'day_{day}.py'], stdin=open(f'input_{day}.txt'))
+    elif sys.argv[1] == 'test':
+        subprocess.run(['python', f'day_{day}.py'], stdin=open(f'test_{day}.txt'))
+    elif sys.argv[1] == 'test_suite':
+        subprocess.run(['python', f'day_{day}.py'], stdin=open(f'test2_{day}.txt'))
