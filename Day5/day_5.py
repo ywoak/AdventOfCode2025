@@ -1,6 +1,6 @@
 import sys
 
-def part1(ranges, ids):
+def part1(ranges: str, ids: str) -> int:
     return sum(
         [
             1
@@ -19,8 +19,8 @@ def part1(ranges, ids):
     )
     
 def create_merge(start_m: int, end_m: int, start: int, end: int) -> list[int]:
-    low = start if start < start_m else start_m
-    high = end if end > end_m else end_m
+    low: int = start if start < start_m else start_m
+    high: int = end if end > end_m else end_m
     return [low, high]
 
 def overlap(start_m: int, end_m: int, start: int, end: int) -> bool:
@@ -38,7 +38,7 @@ def update_merged(merged) -> list[tuple[int, int]]:
                 return merged
     return merged
 
-def part2(ranges) -> int:
+def part2(ranges: str) -> int:
     merged: list[tuple[int, int]] = []
     for _range in ranges.split('\n'):
         overlapped = False
