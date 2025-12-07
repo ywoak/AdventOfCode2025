@@ -1,3 +1,4 @@
+from itertools import groupby
 import sys
 
 type Cephalopod_Problem = list[list[str]]
@@ -5,34 +6,16 @@ type Cephalopod_Problems = list[Cephalopod_Problem]
 type Problem = tuple[str]
 type Problems = list[Problem]
 
-def is_not_empty(elem: list[str]) -> bool:
-    empty: bool = True
-    e: str
-    for e in elem:
-        if e.strip():
-            empty = False
-            return not empty
-    return not empty
+def get_cephalopod_problems(data: str) -> Cephalopod_Problems:
+    cols: list[list[str]] = list(map(list, zip(*[line for line in data.split('\n') if line])))
 
-def get_cephalopod_data(data: str) -> Cephalopod_Problems:
-    initial_zip: list[list[str]] = list(map(list, zip(*[line for line in data.split('\n') if line])))
+    groups: Cephalopod_Problems = []
+    for is_empty, group in groupby(cols, key=lambda col: not any(c.strip() for c in col)):
+        if not is_empty:
+            groups.append(list(group))
+    return groups
 
-    res: Cephalopod_Problems = []
-    one_problem: Cephalopod_Problem = []
-
-    length = len(initial_zip)
-    for i, elem in enumerate(initial_zip):
-        if is_not_empty(elem):
-            one_problem.append(elem)
-            if i == length - 1:
-                res.append(one_problem)
-        elif one_problem:
-            res.append(one_problem)
-            one_problem = []
-
-    return res
-
-def format_cephalopod_expression(cephalopod_data: Cephalopod_Problem) -> str :
+def format_cephalopod_problem(cephalopod_data: Cephalopod_Problem) -> str :
     sign: str = cephalopod_data[0].pop()
 
     res: list[str] = []
@@ -59,8 +42,8 @@ def part1(data: str) -> int:
     return sum(map(eval, map(format_expression, problems)))
 
 def part2(data: str) -> int:
-    cephalopod_data: Cephalopod_Problems = get_cephalopod_data(data)
-    return sum(map(eval, map(format_cephalopod_expression, cephalopod_data)))
+    cephalopod_problems: Cephalopod_Problems = get_cephalopod_problems(data)
+    return sum(map(eval, map(format_cephalopod_problem, cephalopod_problems)))
 
 if __name__ == '__main__':
     data: str = sys.stdin.read()
