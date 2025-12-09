@@ -8,7 +8,12 @@ type Pos = tuple[int, ...]
 type Coords = list[Pos]
 type Circuit = defaultdict[str, Coords]
 
-def find_smallest(coord, lists):
+def find_smallest(a: Pos, b: Pos) -> float:
+    res: float = math.sqrt(sum(((a[0] - b[0]) ** 2, (a[1] - b[1]) ** 2, (a[2] - b[2]) ** 2)))
+    print(f'The straight line distance for {a} and {b} is {res}')
+    return res
+
+def _find_smallest(coord, lists):
     smallest = (0, (0))
 
     for coord in lists:
