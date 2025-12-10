@@ -12,7 +12,6 @@ type Button = list[int]
 type Buttons = list[Button]
 type Formatted = tuple[Goal, Buttons]
 
-
 def debug(func):
     def wrapper(*args, **kwargs):
         print(f"Calling {func.__name__} with: ")
