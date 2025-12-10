@@ -1,13 +1,17 @@
 from pprint import pprint as p
-import re
+from itertools import product
 from ipdb import set_trace
-import sys
+#set_trace(context=5)
 
-type Pos = tuple[int, int]
-type Positions = list[Pos]
-type Coord = tuple[int, ...]
-type Coords = list[Coord]
+import sys
+import re
+
 type Map = list[list[str]]
+type Goal = list[bool]
+type Button = list[int]
+type Buttons = list[Button]
+type Formatted = tuple[Goal, Buttons]
+
 
 def debug(func):
     def wrapper(*args, **kwargs):
@@ -19,23 +23,12 @@ def debug(func):
         return result
     return wrapper
 
-@debug
 def print_map(map: Map) -> None:
     for row in map:
         print("".join(row))
 
-def f() -> None:
-    pass
-
-type Goal = list[bool]
-type Button = list[int]
-type Buttons = list[Button]
-type Formatted = tuple[Goal, Buttons]
-
-@debug
 def format_machine(machine: str) -> Formatted:
     goal = [True if char == '#' else False for char in re.findall(r'\[([.#]+)\]', machine.strip())[0]]
-    print(goal)
     buttons = [
         [int(n) for n in group.split(',')]
         for group in re.findall(r'\((\S+)\)', machine.strip())
@@ -43,46 +36,32 @@ def format_machine(machine: str) -> Formatted:
 
     return (goal, buttons)
 
-def toggle(goal: Goal, button: Button) -> Goal:
+def toggle(goal: Goal, button) -> Goal:
     for pos in button:
         goal[pos] = not goal[pos]
     return goal
 
 def find_fewer(goal: Goal, buttons: Buttons) -> int:
-    fewer = 0
-    to_find = goal[:]
+    L = [0, 1]
 
-    # Doesnt work, sometimes we dont click
-    for i, current_button in enumerate(buttons):
-        print(f'\nWe change button to try with {current_button}')
-        test = buttons[i + 1:]
-        goal = toggle(goal, current_button)
-        for button in test:
-            print(f'curr: {button}')
-            print(f'goal before toggle: {goal}')
-            goal = toggle(goal, button)
-            print(f'goal after toggle: {goal}')
-            if to_find == goal: print('YEEES')
-    return 0
+    combinations: list[tuple[int, ...]]= []
 
-# We assume the input is correct
-def part1(map: list[str]) -> int:
+    for combination in product(L, repeat=len(buttons)):
+        a_goal = [False for _ in goal]
+        for i, e in enumerate(combination):
+            if e == True:
+                a_goal = toggle(a_goal, buttons[i])
+        if a_goal == goal: combinations.append(combination)
+
+    return(min([combination.count(1) for combination in combinations]))
+
+def part1(machines: list[str]) -> int:
     fewer = 0
     for machine in machines:
         goal, buttons = format_machine(machine)
         fewer += find_fewer(goal, buttons)
     return fewer
 
-#set_trace(context=5)
-
-# [] -> light diagram           # . means off, # means on, c'est montre en goal mais de base ils sont tous off
-# () -> button wiring           # toggle the lights in the button, on if off and off if on
-# {} -> joltage requirements    #
-# return the fewest total press required
 if __name__ == '__main__':
-    #machines: list[str] = sys.stdin.read().splitlines()
-    machines: list[str] = open('test_10_min.txt').read().splitlines()
-    #data = format_input(machines)
-    print(f'Part 1 result is: {part1(machines)}\n')
-#    print_map(map)
-#    print(f'part2 result is {part2(f)}')
+    machines: list[str] = sys.stdin.read().splitlines()
+    print(f'Part 1 result is: {part1(machines)}')
