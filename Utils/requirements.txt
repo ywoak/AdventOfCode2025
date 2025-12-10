@@ -6,6 +6,7 @@ dotenv==0.9.9
 executing==2.2.1
 idna==3.11
 iniconfig==2.3.0
+ipdb==0.13.13
 ipython==9.8.0
 ipython_pygments_lexers==1.1.1
 jedi==0.19.2
