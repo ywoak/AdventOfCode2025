@@ -19,6 +19,35 @@ def draw_rectangle(map, largest):
 
     print_map(map)
 
+def is_viable_square(to_check, coord) -> bool:
+    x1, y1 = to_check
+    x2, y2 = coord
+
+    upper_left = (min(x1, x2), min(y1, y2))
+    upper_right = (min(x1, x2), max(y1, y2))
+    lower_left = (max(x1, x2), min(y1, y2))
+    lower_right = (max(x1, x2), max(y1, y2))
+
+    print(upper_left, lower_left)
+
+    return False
+
+
+def find_largest_p2(to_check, coords):
+    largest = {'area': 0, 'rectangle': [(0, 0), (0, 0)]}
+
+    for coord in coords:
+        if coord == to_check: continue
+        if is_viable_square(to_check, coord):
+            print('here')
+            x = abs(to_check[1] - coord[1]) + 1
+            y = abs(to_check[0] - coord[0]) + 1
+            area = x * y
+            if area > largest['area']:
+                largest['area'] = area
+                largest['rectangle'] = (coord, to_check)
+    return largest
+
 def find_largest(to_check, coords):
     largest = {'area': 0, 'rectangle': [(0, 0), (0, 0)]}
 
@@ -36,17 +65,31 @@ def part1(coords: Coords, map: Map) -> dict:
     largest: dict = {'area': 0, 'rectangle': [(0, 0), (0, 0)]}
 
     for coord in coords:
-        res = find_largest(coord, coords)
+        res = find_largest_p2(coord, coords)
         if res['area'] > largest['area']:
             largest = res
     #draw_rectangle(map, largest)
     return largest
 
+def create_perimeter(coords):
+    print(coords)
+
 def part2(coords) -> int:
-    return 0
+    create_perimeter(coords)
+
+
+    largest: dict = {'area': 0, 'rectangle': [(0, 0), (0, 0)]}
+
+    for coord in coords:
+        res = find_largest(coord, coords)
+        if res['area'] > largest['area']:
+            largest = res
+    #draw_rectangle(map, largest)
+
+    return largest['area']
 
 def format_input(coords: Coords):
-    print(coords)
+    #print(coords)
     f = []
 
     curr = []
@@ -70,7 +113,7 @@ if __name__ == '__main__':
     coords: Coords = [tuple(map(int, (coord for coord in line.split(',')))) for line in data]
     swap_coords: Coords = [(y, x) for x, y in coords]
     map: Map = [['.' for c in range(14)] for _ in range(9)]
-    #for y, x in coords: map[x][y] = '#'
+    for y, x in coords: map[x][y] = '#'
 #    part_1: dict = part1(coords, map)
 #    print(f'The largest area possible is: {part_1['area']}\nFor the two coords: {part_1['rectangle']}')
     f = format_input(sorted(swap_coords))
