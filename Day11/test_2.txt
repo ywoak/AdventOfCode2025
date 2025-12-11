@@ -1,0 +1,3 @@
+aaa: svr
+svr: aaa bbb
+bbb: out
